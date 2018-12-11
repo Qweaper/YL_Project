@@ -3,85 +3,67 @@ from random import choice
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 
 
-class Sapper():
+# ну это костыль :D
+def get_coords(i, j, maxi, maxj):
+    if i == 0 and j == 0:
+        return (i + 1, j), (i, j + 1), (i + 1, j + 1)
+    elif i == 0 and j == maxj - 1:
+        return (i + 1, j), (i, j - 1), (i + 1, j - 1)
+    elif i == maxi - 1 and j == 0:
+        return (i - 1, j), (i, j + 1), (i - 1, j + 1)
+    elif i == maxi - 1 and j == maxj - 1:
+        return (i - 1, j), (i, j - 1), (i - 1, j - 1)
+    elif i == 0:
+        return (i, j - 1), (i + 1, j - 1), (i + 1, j), (i + 1, j + 1), (i, j + 1)
+    elif i == maxi - 1:
+        return (i, j - 1), (i - 1, j - 1), (i - 1, j), (i - 1, j + 1), (i, j + 1)
+    elif j == 0:
+        return (i - 1, j), (i - 1, j + 1), (i, j + 1), (i + 1, j + 1), (i + 1, j)
+    elif j == maxj - 1:
+        return (i - 1, j), (i - 1, j - 1), (i, j - 1), (i + 1, j - 1), (i + 1, j)
+    return (i + 1, j), (i, j + 1), (i + 1, j + 1), (i - 1, j), (i, j - 1), (i - 1, j - 1), (i + 1, j - 1), (
+    i - 1, j + 1)
+
+
+class Sapper(object):
     def __init__(self, high, weigh, mines, excpt):
         self.high = high
         self.weigh = weigh
         self.mines = mines
         # создание случайных номеров мин
-        numbers = set(range(0, self.high * self.weigh))
-        numbers.remove(excpt)
+        numbers = list(range(0, high * weigh))
+        numbers.remove(excpt - 1)  # для себя: возможно придеться отнисать единичку в связи с рассхождением индексом кнопок
+        ouch = (excpt - 1) // weigh
+        for i1, j1 in get_coords(ouch, excpt - (high * ouch) - 1, high, weigh):
+            numbers.remove(i1 * weigh + j1)
         self.numbers_mine = set()
         for _ in range(self.mines):
             self.numbers_mine.add(choice(numbers))
-        del numbers
+        numbers.clear()
 
     def get_field(self):
-        field = []  # создание поля с минами
+        field = []  # создание пустого поля
         for i in range(self.high):
             data = []
             for j in range(self.weigh):
-                if i * self.weigh + j in self.numbers_mine:
-                    data.append(-1)
-                else:
-                    data.append(0)
+                data.append(0)
             field.append(data)
-        # ну тут как бы пишется в клетках количество рядом стоящих мин
-        for i in range(self.high):  # и да, выглядит очень больно
-            for j in range(self.weigh):
-                if field[i][j] == -1:
-                    if i == 0 and j == 0:
-                        field[i + 1][j + 1] += 1
-                        field[i + 1][j] += 1
-                        field[i][j + 1] += 1
-                    elif i == 0 and j == self.weigh - 1:
-                        field[i + 1][j - 1] += 1
-                        field[i + 1][j] += 1
-                        field[i][j - 1] += 1
-                    elif i == self.high - 1 and j == 0:
-                        field[i - 1][j + 1] += 1
-                        field[i - 1][j] += 1
-                        field[i][j + 1] += 1
-                    elif i == self.high - 1 and j == self.weigh - 1:
-                        field[i - 1][j - 1] += 1
-                        field[i - 1][j] += 1
-                        field[i][j - 1] += 1
-                    elif i == 0:
-                        field[i + 1][j - 1] += 1
-                        field[i][j + 1] += 1
-                        field[i + 1][j + 1] += 1
-                        field[i][j - 1] += 1
-                        field[i + 1][j] += 1
-                    elif j == 0:
-                        field[i - 1][j + 1] += 1
-                        field[i][j + 1] += 1
-                        field[i + 1][j + 1] += 1
-                        field[i - 1][j] += 1
-                        field[i + 1][j] += 1
-                    elif i == self.high - 1:
-                        field[i - 1][j - 1] += 1
-                        field[i][j + 1] += 1
-                        field[i - 1][j + 1] += 1
-                        field[i][j - 1] += 1
-                        field[i - 1][j] += 1
-                    elif j == self.weigh - 1:
-                        field[i - 1][j - 1] += 1
-                        field[i][j - 1] += 1
-                        field[i + 1][j - 1] += 1
-                        field[i - 1][j] += 1
-                        field[i + 1][j] += 1
-                    else:
-                        field[i + 1][j + 1] += 1
-                        field[i + 1][j] += 1
-                        field[i][j + 1] += 1
-
-                        field[i - 1][j - 1] += 1
-                        field[i - 1][j] += 1
-                        field[i][j - 1] += 1
-
-                        field[i - 1][j + 1] += 1
-                        field[i + 1][j - 1] += 1
         return field
+
+    def edit_field(self, field):
+        edited_field = field.copy()  # ставим мины
+        for i in range(self.high):
+            for j in range(self.weigh):
+                if i * self.weigh + j in self.numbers_mine:
+                    edited_field[i][j] = -1
+        # ну тут как бы пишется в клетках количество рядом стоящих мин
+        for i in range(self.high):
+            for j in range(self.weigh):
+                if edited_field[i][j] == -1:
+                    for i1, j1 in get_coords(i, j, self.high, self.weigh):
+                        if edited_field[i1][j1] != -1:
+                            edited_field[i1][j1] += 1
+        return edited_field
 
 
 class Example(QWidget):
@@ -111,8 +93,6 @@ class Example(QWidget):
         if self.sender().text == 'Нормальный':
             pass
         if self.sender().text == 'Сложный':
-            pass
-        if self.sender().text == 'Хардкор':
             pass
 
     def easy(self):
