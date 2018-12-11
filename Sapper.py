@@ -72,32 +72,25 @@ class Example(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setGeometry(300, 300, 1000, 200)
+        self.setGeometry(300, 300, 480, 480)
         self.setWindowTitle("Supper")
 
-        self.button_1 = QPushButton(self)
-        self.button_1.move(20, 40)
-        self.button_1.setText("Кнопка 1")
-        self.button_1.clicked.connect(self.run)
+        arr = Sapper(16, 16, 40, 1)
+        array = arr.edit_field(arr.get_field())
+        self.buttons = []
+        for i in range(16):
+            self.buttons.append([0] * 16)
+        for i in range(16):
+            for j in range(16):
+                self.buttons[i][j] = QPushButton(self)
+                self.buttons[i][j].resize(30, 30)
+                self.buttons[i][j].move(0 + i * 30, 0 + j * 30)
+                self.buttons[i][j].setText("")
+                self.buttons[i][j].xy = (i, j)
+                self.buttons[i][j].clicked.connect(self.check)
 
-        self.button_2 = QPushButton(self)
-        self.button_2.move(20, 80)
-        self.button_2.setText("Кнопка 2")
-        self.button_2.clicked.connect(self.run)
-
-        self.show()
-
-    def run(self):
-        if self.sender().text == 'Легкий':
-            pass
-        if self.sender().text == 'Нормальный':
-            pass
-        if self.sender().text == 'Сложный':
-            pass
-
-    def easy(self):
-        pass
-
+    def check(self):
+        x, y = self.sender().xy
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
