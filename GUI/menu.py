@@ -47,6 +47,7 @@ class Ui_Menu(object):
         self.mines = QtWidgets.QLineEdit(self.centralwidget)
         self.mines.setGeometry(QtCore.QRect(150, 210, 113, 30))
         self.mines.setObjectName("mines")
+        
         Menu.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Menu)
