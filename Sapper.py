@@ -26,20 +26,21 @@ def get_coords(i, j, maxi, maxj):
 
 
 class Sapper(object):
-    def __init__(self, high, weigh, mines, excpt):
+    def __init__(self, high, weigh, mines, excpt=None):
         self.high = high
         self.weigh = weigh
         self.mines = mines
-        # создание случайных номеров мин
-        numbers = list(range(0, high * weigh))
-        numbers.remove(excpt - 1)  # для себя: возможно придеться отнисать единичку в связи с рассхождением индексом кнопок
-        ouch = (excpt - 1) // weigh
-        for i1, j1 in get_coords(ouch, excpt - (high * ouch) - 1, high, weigh):
-            numbers.remove(i1 * weigh + j1)
-        self.numbers_mine = set()
-        for _ in range(self.mines):
-            self.numbers_mine.add(choice(numbers))
-        numbers.clear()
+        if excpt:
+            # создание случайных номеров мин
+            numbers = list(range(0, high * weigh))
+            numbers.remove(excpt - 1)  # для себя: возможно придеться отнисать единичку в связи с рассхождением индексом кнопок
+            ouch = (excpt - 1) // weigh
+            for i1, j1 in get_coords(ouch, excpt - (high * ouch) - 1, high, weigh):
+                numbers.remove(i1 * weigh + j1)
+            self.numbers_mine = set()
+            for _ in range(self.mines):
+                self.numbers_mine.add(choice(numbers))
+            numbers.clear()
 
     def get_field(self):
         field = []  # создание пустого поля
@@ -74,9 +75,9 @@ class Example(QWidget):
     def initUI(self):
         self.setGeometry(300, 300, 480, 480)
         self.setWindowTitle("Supper")
-
+        # делаем кнопочки :3
         arr = Sapper(16, 16, 40, 1)
-        array = arr.edit_field(arr.get_field())
+        array = arr.get_field()
         self.buttons = []
         for i in range(16):
             self.buttons.append([0] * 16)
@@ -87,10 +88,15 @@ class Example(QWidget):
                 self.buttons[i][j].move(0 + i * 30, 0 + j * 30)
                 self.buttons[i][j].setText("")
                 self.buttons[i][j].xy = (i, j)
-                self.buttons[i][j].clicked.connect(self.check)
+                self.buttons[i][j].clicked.connect(self.sap)
 
-    def check(self):
+    def sap(self):
         x, y = self.sender().xy
+        trash = Sapper(16, 16, 40, x * 16 + y)
+        field = trash.edit_field(trash.get_field())
+        down = -1
+        up = -1
+        self.buttons[x][y].setEnabled(False)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
