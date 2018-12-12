@@ -1,6 +1,8 @@
 import sys
 from random import choice
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import QIcon
 
 
 # ну это костыль :D
@@ -70,6 +72,7 @@ class Sapper(object):
 class Example(QWidget):
     def __init__(self):
         super().__init__()
+        self.flag = True  # Без комментариев...
         self.initUI()
 
     def initUI(self):
@@ -81,6 +84,7 @@ class Example(QWidget):
         self.buttons = []
         for i in range(16):
             self.buttons.append([0] * 16)
+        self.pictures = self.buttons.copy()  # взамен кнопок в будущем
         for i in range(16):
             for j in range(16):
                 self.buttons[i][j] = QPushButton(self)
@@ -92,11 +96,38 @@ class Example(QWidget):
 
     def sap(self):
         x, y = self.sender().xy
-        trash = Sapper(16, 16, 40, x * 16 + y)
-        field = trash.edit_field(trash.get_field())
-        down = -1
-        up = -1
+        if self.flag:
+            self.trash = Sapper(16, 16, 40, x * 16 + y)
+            self.field = self.trash.edit_field(self.trash.get_field())
+            self.flag = False
         self.buttons[x][y].setEnabled(False)
+        if self.field[x][y] == -1:
+            self.icon = QIcon('C:/Pictures/mine.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 1:
+            self.icon = QIcon('C:/Цифры/1.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 2:
+            self.icon = QIcon('C:/Цифры/2.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 3:
+            self.icon = QIcon('C:/Цифры/3.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 4:
+            self.icon = QIcon('C:/Цифры/4.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 5:
+            self.icon = QIcon('C:/Цифры/5.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 6:
+            self.icon = QIcon('C:/Цифры/6.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 7:
+            self.icon = QIcon('C:/Цифры/7.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 8:
+            self.icon = QIcon('C:/Цифры/8.jpg')
+            self.buttons[x][y].setIcon(self.icon)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
