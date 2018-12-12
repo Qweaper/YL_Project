@@ -7,6 +7,8 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QIcon
+
 
 class Ui_Menu(object):
     def setupUi(self, Menu):
@@ -52,6 +54,8 @@ class Ui_Menu(object):
 
         self.retranslateUi(Menu)
         QtCore.QMetaObject.connectSlotsByName(Menu)
+        icon = QIcon('./picks/quest.png')
+        self.start.setIcon(icon)
 
     def retranslateUi(self, Menu):
         _translate = QtCore.QCoreApplication.translate
