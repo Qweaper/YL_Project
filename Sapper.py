@@ -1,7 +1,6 @@
 import sys
 from random import choice
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel
-from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -89,7 +88,6 @@ class Example(QWidget):
         self.buttons = []
         for i in range(16):
             self.buttons.append([0] * 16)
-        self.pictures = self.buttons.copy()  # взамен кнопок в будущем
         for i in range(16):
             for j in range(16):
                 self.buttons[i][j] = QPushButton(self)
@@ -99,51 +97,50 @@ class Example(QWidget):
                 self.buttons[i][j].xy = (i, j)
                 self.buttons[i][j].clicked.connect(self.sap)
 
-        self.coords = QLabel(self)
-        self.coords.setText("Координаты:None, None")
-        self.coords.move(30, 30)
-
     def open_empty_field(self, i, j):
         x = i
         y = j
+
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.buttons[x][y].setEnabled(False)
-            for i, j in get_coords(x, i, len(self.field), len(self.field[0])):
+            for i, j in get_coords(x, y, len(self.field), len(self.field[0])):
                 if self.field[i][j] == 0:
+                    self.buttons[x][y].setEnabled(False)
+
                     self.open_empty_field(i, j)
-                elif self.field[i][j] >= 1:
-                    self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
-                    self.buttons[x][y].setIcon(self.icon)
-                else:
+                # elif self.field[i][j] >= 1:
+                #     self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
+                #     self.buttons[x][y].setIcon(self.icon)
+                elif self.field[i][j] != 0:
                     break
-        # Добвать проверку на наличие флага
-        if self.field[x][y] == -1:  # Добавить метод заканчивающий игру
-            self.icon = QIcon('/picks/mine.jpg')
-            self.buttons[x][y].setIcon(self.icon)
         else:
-            self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
-            self.buttons[x][y].setIcon(self.icon)
+            return
+        # Добвать проверку на наличие флага
+        # elif self.field[x][y] >= 1:  # Добавить метод заканчивающий игру
+        #     self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
+        #     self.buttons[x][y].setIcon(self.icon)
+
 
     def sap(self):
         x, y = self.sender().xy
         print(self.i, self.j)
         if self.flag:
-            self.trash = Sapper(16, 16, 40, x * 16 + y)
+            self.trash = Sapper(16, 16, 0, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
-        # for i in self.field:
-        #     for j in i:
-        #         print(j, end=' ')
-        #     print('\t')
+        for i in self.field:
+            for j in i:
+                print(j, end=' ')
+            print('\t')
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.open_empty_field(x, y)# надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
         if self.field[x][y] == -1:
-            self.icon = QIcon('/picks/min.png')
+            self.icon = QIcon('GUI/picks/min.png')
             self.buttons[x][y].setIcon(self.icon)
         else:
-            self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
+            self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
             self.buttons[x][y].setIcon(self.icon)
 
 
@@ -155,7 +152,7 @@ class Example(QWidget):
         print(self.i, self.j)  # флажок на наличие клика мышки
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
-            icon = QIcon('')
+            icon = QIcon('GUI/picks/flag.png')
             if self.buttons[self.i][self.j].icon():
                 self.buttons[self.i][self.j].setIcon(QIcon())
             else:
