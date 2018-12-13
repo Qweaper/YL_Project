@@ -107,19 +107,21 @@ class Example(QWidget):
         x = i
         y = j
         if self.field[x][y] == 0:  # проверка на пустую клетку
-            for i, j in get_coords(x, y, len(self.field),
-                                   len(self.field[0])):  # надо сделать другой метод открытия клетки
-                self.open_empty_field(x, y)
-                if self.buttons[x][y] == 0:
-                    self.buttons[x][y].setEnabled(False)
+            self.buttons[x][y].setEnabled(False)
+            for i, j in get_coords(x, i, len(self.field), len(self.field[0])):
+                if self.field[i][j] == 0:
+                    self.open_empty_field(i, j)
+                elif self.field[i][j] >= 1:
+                    self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
+                    self.buttons[x][y].setIcon(self.icon)
                 else:
                     break
         # Добвать проверку на наличие флага
         if self.field[x][y] == -1:  # Добавить метод заканчивающий игру
-            self.icon = QIcon('C:/Pictures/mine.jpg')
+            self.icon = QIcon('/picks/mine.jpg')
             self.buttons[x][y].setIcon(self.icon)
         else:
-            self.icon = QIcon('C:/Цифры/{}.jpg'.format(self.field[x][y]))
+            self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
             self.buttons[x][y].setIcon(self.icon)
 
     def sap(self):
@@ -129,20 +131,21 @@ class Example(QWidget):
             self.trash = Sapper(16, 16, 40, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
-        for i in self.field:
-            for j in i:
-                print(j, end=' ')
-            print('\t')
+        # for i in self.field:
+        #     for j in i:
+        #         print(j, end=' ')
+        #     print('\t')
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.open_empty_field(x, y)# надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
         if self.field[x][y] == -1:
-            self.icon = QIcon('C:/Pictures/mine.jpg')
+            self.icon = QIcon('/picks/min.png')
             self.buttons[x][y].setIcon(self.icon)
         else:
-            self.icon = QIcon('C:/Цифры/{}.jpg'.format(self.field[x][y]))
+            self.icon = QIcon('/Цифры/{}.jpg'.format(self.field[x][y]))
             self.buttons[x][y].setIcon(self.icon)
+
 
 
     def mousePressEvent(self, event):
