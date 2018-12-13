@@ -111,9 +111,13 @@ class Example(QWidget):
                     self.off_square.add((i, j))
                     self.open_empty_field(i, j)
                 elif self.field[i][j] >= 1:
-
-                    self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
-                    self.buttons[x][y].setIcon(self.icon)
+                    icon1 = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
+                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Normal,
+                                    QtGui.QIcon.Off)
+                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Disabled,
+                                    QtGui.QIcon.Off)
+                    self.buttons[x][y].setIcon(icon1)
+                    break
                 elif self.field[i][j] != 0:
                     break
         else:
@@ -123,7 +127,7 @@ class Example(QWidget):
         x, y = self.sender().xy
         print(self.i, self.j)
         if self.flag:
-            self.trash = Sapper(16, 16, 10, x * 16 + y)
+            self.trash = Sapper(16, 16, 40, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
         if self.field[x][y] == 0:  # проверка на пустую клетку
