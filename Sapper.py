@@ -1,7 +1,8 @@
 import sys
+from PyQt5 import QtGui
 from random import choice
 from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import Qt
 
 
@@ -110,17 +111,13 @@ class Example(QWidget):
                     self.off_square.add((i, j))
                     self.open_empty_field(i, j)
                 elif self.field[i][j] >= 1:
+
                     self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
                     self.buttons[x][y].setIcon(self.icon)
                 elif self.field[i][j] != 0:
                     break
         else:
             return
-        # Добвать проверку на наличие флага
-        # elif self.field[x][y] >= 1:  # Добавить метод заканчивающий игру
-        #     self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
-        #     self.buttons[x][y].setIcon(self.icon)
-
 
     def sap(self):
         x, y = self.sender().xy
@@ -129,22 +126,24 @@ class Example(QWidget):
             self.trash = Sapper(16, 16, 10, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
-        for i in self.field:
-            for j in i:
-                print(j, end=' ')
-            print('\t')
         if self.field[x][y] == 0:  # проверка на пустую клетку
-            self.open_empty_field(x, y)# надо сделать другой метод открытия клетки
+            self.open_empty_field(x, y)  # надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
         if self.field[x][y] == -1:
+            icon1 = QIcon('GUI/picks/min.png'.format(self.field[x][y]))
+            icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
             self.icon = QIcon('GUI/picks/min.png')
-            self.buttons[x][y].setIcon(self.icon)
+            self.buttons[x][y].setEnabled(False)
+            self.buttons[x][y].setIcon(icon1)
+
         else:
-            self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
-            self.buttons[x][y].setIcon(self.icon)
-
-
+            icon1 = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
+            icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+            self.buttons[x][y].setEnabled(False)
+            self.buttons[x][y].setIcon(icon1)
 
     def mousePressEvent(self, event):
         self.i = event.x() // 30
@@ -152,10 +151,11 @@ class Example(QWidget):
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
             icon = QIcon('GUI/picks/flag.png')
-            if True:
-                print(self.buttons[self.i][self.j])
+            if self.buttons[self.i][self.j].icon is True:
+                self.buttons[self.i][self.j].setIcon(QIcon())
+            else:
                 self.buttons[self.i][self.j].setIcon(icon)
-        # self.buttons[self.i][self.j].clicked.connect(self.sap)
+            # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
 
 if __name__ == '__main__':

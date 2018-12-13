@@ -7,13 +7,11 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
-
 
 class Ui_Menu(object):
     def setupUi(self, Menu):
         Menu.setObjectName("Menu")
-        Menu.resize(300, 300)
+        Menu.resize(300, 295)
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap("picks/min.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Menu.setWindowIcon(icon)
@@ -38,7 +36,12 @@ class Ui_Menu(object):
         self.t_mine.setGeometry(QtCore.QRect(40, 210, 81, 18))
         self.t_mine.setObjectName("t_mine")
         self.start = QtWidgets.QPushButton(self.centralwidget)
+        self.start.setEnabled(True)
         self.start.setGeometry(QtCore.QRect(0, 260, 300, 34))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("picks/flag.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap("picks/flag.png"), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+        self.start.setIcon(icon1)
         self.start.setObjectName("start")
         self.high = QtWidgets.QLineEdit(self.centralwidget)
         self.high.setGeometry(QtCore.QRect(150, 110, 113, 30))
@@ -49,13 +52,10 @@ class Ui_Menu(object):
         self.mines = QtWidgets.QLineEdit(self.centralwidget)
         self.mines.setGeometry(QtCore.QRect(150, 210, 113, 30))
         self.mines.setObjectName("mines")
-        
         Menu.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(Menu)
         QtCore.QMetaObject.connectSlotsByName(Menu)
-        icon = QIcon('./picks/quest.png')
-        self.start.setIcon(icon)
 
     def retranslateUi(self, Menu):
         _translate = QtCore.QCoreApplication.translate
