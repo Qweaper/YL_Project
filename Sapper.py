@@ -1,6 +1,6 @@
 import sys
 from random import choice
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -78,6 +78,7 @@ class Example(QWidget):
         self.i = 0
         self.j = 0
         self.mouse_btm = 1
+        self.off_square = set()
 
     def initUI(self):
         self.setGeometry(300, 300, 480, 480)
@@ -104,13 +105,13 @@ class Example(QWidget):
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.buttons[x][y].setEnabled(False)
             for i, j in get_coords(x, y, len(self.field), len(self.field[0])):
-                if self.field[i][j] == 0:
+                if self.field[i][j] == 0 and (i, j) not in self.off_square:
                     self.buttons[x][y].setEnabled(False)
-
+                    self.off_square.add((i, j))
                     self.open_empty_field(i, j)
-                # elif self.field[i][j] >= 1:
-                #     self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
-                #     self.buttons[x][y].setIcon(self.icon)
+                elif self.field[i][j] >= 1:
+                    self.icon = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
+                    self.buttons[x][y].setIcon(self.icon)
                 elif self.field[i][j] != 0:
                     break
         else:
@@ -125,7 +126,7 @@ class Example(QWidget):
         x, y = self.sender().xy
         print(self.i, self.j)
         if self.flag:
-            self.trash = Sapper(16, 16, 0, x * 16 + y)
+            self.trash = Sapper(16, 16, 10, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
         for i in self.field:
@@ -148,14 +149,11 @@ class Example(QWidget):
     def mousePressEvent(self, event):
         self.i = event.x() // 30
         self.j = event.y() // 30
-        self.coords.setText("Координаты:{}, {}".format(event.x(), event.y()))
-        print(self.i, self.j)  # флажок на наличие клика мышки
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
             icon = QIcon('GUI/picks/flag.png')
-            if self.buttons[self.i][self.j].icon():
-                self.buttons[self.i][self.j].setIcon(QIcon())
-            else:
+            if True:
+                print(self.buttons[self.i][self.j])
                 self.buttons[self.i][self.j].setIcon(icon)
         # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
