@@ -143,27 +143,7 @@ class Example(QWidget):
         else:
             self.icon = QIcon('C:/Цифры/{}.jpg'.format(self.field[x][y]))
             self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 2:
-        #     self.icon = QIcon('C:/Цифры/2.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 3:
-        #     self.icon = QIcon('C:/Цифры/3.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 4:
-        #     self.icon = QIcon('C:/Цифры/4.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 5:
-        #     self.icon = QIcon('C:/Цифры/5.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 6:
-        #     self.icon = QIcon('C:/Цифры/6.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 7:
-        #     self.icon = QIcon('C:/Цифры/7.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 8:
-        #     self.icon = QIcon('C:/Цифры/8.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
+
 
     def mousePressEvent(self, event):
         self.i = event.x() // 30
