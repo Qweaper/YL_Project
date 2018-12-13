@@ -1,9 +1,8 @@
 import sys
 from random import choice
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtGui import QIcon
-from PyQt5.QtCore import Qt
 
 
 # ну это костыль :D
@@ -25,7 +24,7 @@ def get_coords(i, j, maxi, maxj):
     elif j == maxj - 1:
         return (i - 1, j), (i - 1, j - 1), (i, j - 1), (i + 1, j - 1), (i + 1, j)
     return (i + 1, j), (i, j + 1), (i + 1, j + 1), (i - 1, j), (i, j - 1), (i - 1, j - 1), (i + 1, j - 1), (
-        i - 1, j + 1)
+    i - 1, j + 1)
 
 
 class Sapper(object):
@@ -36,8 +35,7 @@ class Sapper(object):
         if excpt:
             # создание случайных номеров мин
             numbers = list(range(0, high * weigh))
-            numbers.remove(
-                excpt - 1)  # для себя: возможно придеться отнисать единичку в связи с рассхождением индексом кнопок
+            numbers.remove(excpt - 1)  # для себя: возможно придеться отнисать единичку в связи с рассхождением индексом кнопок
             ouch = (excpt - 1) // weigh
             for i1, j1 in get_coords(ouch, excpt - (high * ouch) - 1, high, weigh):
                 numbers.remove(i1 * weigh + j1)
@@ -76,9 +74,6 @@ class Example(QWidget):
         super().__init__()
         self.flag = True  # Без комментариев...
         self.initUI()
-        self.i = 0
-        self.j = 0
-        self.mouse_btm = 1
 
     def initUI(self):
         self.setGeometry(300, 300, 480, 480)
@@ -99,85 +94,143 @@ class Example(QWidget):
                 self.buttons[i][j].xy = (i, j)
                 self.buttons[i][j].clicked.connect(self.sap)
 
-        self.coords = QLabel(self)
-        self.coords.setText("Координаты:None, None")
-        self.coords.move(30, 30)
-
-    def open_empty_field(self, i, j):
-        x = i
-        y = j
-        if self.field[x][y] == 0:  # проверка на пустую клетку
-            for i, j in get_coords(x, y, len(self.field),
-                                   len(self.field[0])):  # надо сделать другой метод открытия клетки
-                self.open_empty_field(x, y)
-                if self.buttons[x][y] == 0:
-                    self.buttons[x][y].setEnabled(False)
-                else:
-                    break
-        # Добвать проверку на наличие флага
-        if self.field[x][y] == -1:  # Добавить метод заканчивающий игру
-            self.icon = QIcon('C:/Pictures/mine.jpg')
-            self.buttons[x][y].setIcon(self.icon)
-        else:
-            self.icon = QIcon('C:/Цифры/{}.jpg'.format(self.field[x][y]))
-            self.buttons[x][y].setIcon(self.icon)
-
     def sap(self):
         x, y = self.sender().xy
-        print(self.i, self.j)
         if self.flag:
             self.trash = Sapper(16, 16, 40, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
-        for i in self.field:
-            for j in i:
-                print(j, end=' ')
-            print('\t')
-        if self.field[x][y] == 0:  # проверка на пустую клетку
-            self.open_empty_field(x, y)# надо сделать другой метод открытия клетки
-            self.buttons[x][y].setEnabled(False)
-            # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
-        if self.field[x][y] == -1:
+        self.buttons[x][y].setEnabled(False)
+        if self.field[x][y] == -1:  # Позже нужно добавить метод заканчивающий игру
             self.icon = QIcon('C:/Pictures/mine.jpg')
             self.buttons[x][y].setIcon(self.icon)
-        else:
-            self.icon = QIcon('C:/Цифры/{}.jpg'.format(self.field[x][y]))
+        elif self.field[x][y] == 1:
+            self.icon = QIcon('C:/Цифры/1.jpg')
             self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 2:
-        #     self.icon = QIcon('C:/Цифры/2.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 3:
-        #     self.icon = QIcon('C:/Цифры/3.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 4:
-        #     self.icon = QIcon('C:/Цифры/4.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 5:
-        #     self.icon = QIcon('C:/Цифры/5.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 6:
-        #     self.icon = QIcon('C:/Цифры/6.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 7:
-        #     self.icon = QIcon('C:/Цифры/7.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
-        # elif self.field[x][y] == 8:
-        #     self.icon = QIcon('C:/Цифры/8.jpg')
-        #     self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 2:
+            self.icon = QIcon('C:/Цифры/2.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 3:
+            self.icon = QIcon('C:/Цифры/3.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 4:
+            self.icon = QIcon('C:/Цифры/4.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 5:
+            self.icon = QIcon('C:/Цифры/5.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 6:
+            self.icon = QIcon('C:/Цифры/6.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 7:
+            self.icon = QIcon('C:/Цифры/7.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        elif self.field[x][y] == 8:
+            self.icon = QIcon('C:/Цифры/8.jpg')
+            self.buttons[x][y].setIcon(self.icon)
+        if self.field[x][y] == 0:
+            up = 0
+            down = 0
+            if x != 0:
+                if self.field[x][y] != -1:
+                    up = y
 
-    def mousePressEvent(self, event):
-        self.i = event.x() // 30
-        self.j = event.y() // 30
-        self.coords.setText("Координаты:{}, {}".format(event.x(), event.y()))
-        print(self.i, self.j)  # флажок на наличие клика мышки
-        if event.button() == Qt.RightButton:
-            self.mouse_btm = event.button()
-            icon = QIcon('')
-            if self.buttons[self.i][self.j].icon():
-                self.buttons[self.i][self.j].setIcon(QIcon())
-            else:
-                self.buttons[self.i][self.j].setIcon(icon)
-        # self.buttons[self.i][self.j].clicked.connect(self.sap)
+            if x != self.weight - 1:
+                if self.field[x][y] != -1:
+                    down = y
+            # left
+            for j in range(y - 1, -1, -1):
+                if x != 0:
+                    if self.field[x][j] != -1:
+                        up = j
+
+                if x != self.weight - 1:
+                    if self.field[x][j] != -1:
+                        down = j
+
+                if self.field[x][j] == -1:
+                    break
+                elif self.field[x][j] == 1:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/1.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 2:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/2.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 3:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/3.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 4:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/4.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 5:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/5.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 6:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/6.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 7:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/7.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 8:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/8.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                else:
+                    self.buttons[x][j].setEnabled(False)
+
+            # right
+            for j in range(y - 1, self.weight):
+                if x != 0:
+                    if self.field[x][j] != -1:
+                        up = j
+
+                if x != self.weight - 1:
+                    if self.field[x][j] != -1:
+                        down = j
+
+                if self.field[x][j] == -1:
+                    break
+                elif self.field[x][j] == 1:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/1.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 2:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/2.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 3:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/3.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 4:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/4.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 5:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/5.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 6:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/6.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 7:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/7.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                elif self.field[x][j] == 8:
+                    self.buttons[x][j].setEnabled(False)
+                    self.icon = QIcon('C:/Цифры/8.jpg')
+                    self.buttons[x][j].setIcon(self.icon)
+                else:
+                    self.buttons[x][j].setEnabled(False)
 
 
 if __name__ == '__main__':
