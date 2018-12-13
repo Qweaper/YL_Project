@@ -151,9 +151,11 @@ class Example(QWidget):
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
             icon = QIcon('GUI/picks/flag.png')
-            if self.buttons[self.i][self.j].icon is True:
-                self.buttons[self.i][self.j].setIcon(QIcon())
+            if self.buttons[self.i][self.j].icon:
+                print(1)
+                self.buttons[self.i][self.j].setIcon(QIcon('GUI/picks/background.png'))
             else:
+                print(2)
                 self.buttons[self.i][self.j].setIcon(icon)
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
