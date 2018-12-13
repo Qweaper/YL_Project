@@ -125,7 +125,7 @@ class Example(QWidget):
 
     def sap(self):
         x, y = self.sender().xy
-        print(self.i, self.j)
+        # print(self.i, self.j)
         if self.flag:
             self.trash = Sapper(16, 16, 40, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
