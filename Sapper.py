@@ -1,9 +1,10 @@
 import sys
 from PyQt5 import QtGui
 from random import choice
-from PyQt5.QtWidgets import QApplication, QWidget, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QLabel, QDialog, QMainWindow
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtCore import Qt
+from menu import Ui_Menu
 
 
 # ну это костыль :D
@@ -26,6 +27,17 @@ def get_coords(i, j, maxi, maxj):
         return (i - 1, j), (i - 1, j - 1), (i, j - 1), (i + 1, j - 1), (i + 1, j)
     return (i + 1, j), (i, j + 1), (i + 1, j + 1), (i - 1, j), (i, j - 1), (i - 1, j - 1), (i + 1, j - 1), (
         i - 1, j + 1)
+
+
+class MyWidget(QMainWindow, Ui_Menu):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+
+
+    def initUI(self):
+        self.start.clicked().connect()
+
 
 
 class Sapper(object):
@@ -78,12 +90,19 @@ class Example(QWidget):
         self.initUI()
         self.i = 0
         self.j = 0
-        self.flag_checker = {}
+        self.flag_checker_list = {}
         self.mouse_btm = 1
         self.off_square = set()
+        self.num_of_flags = 0
+        self.trash = [[]]
+        self.field = [[]]  # Надо будет добавить количество мин равное количеству флагов
 
     def initUI(self):
-        self.setGeometry(300, 300, 480, 480)
+        self.flags = QLabel(self)
+        self.flags.setText('Кол-во флагов: {}'.format(0))
+        self.flags.move(0, 480)
+        self.flags.resize(150, 20)
+        self.setGeometry(300, 300, 480, 500)
         self.setWindowTitle("Supper")
         # делаем кнопочки :3
         # arr = Sapper(16, 16, 40, 1)
@@ -130,7 +149,9 @@ class Example(QWidget):
             self.open_empty_field(x, y)  # надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
-        if self.field[x][y] == -1:
+        elif (x, y) in self.flag_checker_list.keys():
+            pass
+        elif self.field[x][y] == -1:
             icon1 = QIcon('GUI/picks/min.png'.format(self.field[x][y]))
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
@@ -150,27 +171,31 @@ class Example(QWidget):
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
             icon = QIcon('GUI/picks/flag.png')
-            if (self.i, self.j) in self.flag_checker.keys():
+            if (self.i, self.j) in self.flag_checker_list.keys():
                 try:
                     self.buttons[self.i][self.j].setIcon(QIcon())
-                    self.flag_checker.pop((self.i, self.j))
+                    self.flag_checker_list.pop((self.i, self.j))
+                    self.num_of_flags += 1
+                    self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
                 except Example:
                     pass
             else:
                 self.buttons[self.i][self.j].setIcon(icon)
-                self.flag_checker[(self.i, self.j)] = True
+                self.flag_checker_list[(self.i, self.j)] = True
+                self.num_of_flags -= 1
+                self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
     def game_over(self):
         for i in range(len(self.field)):
             for j in range(len(self.field[0])):
-                if (i, j) in self.flag_checker.keys() and self.field[i][j] != -1:
+                if (i, j) in self.flag_checker_list.keys() and self.field[i][j] != -1:
                     icon1 = QIcon('GUI/picks/f_tick.png'.format(self.field[i][j]))
                     icon1.addPixmap(QPixmap('GUI/picks/f_tick.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                     icon1.addPixmap(QPixmap('GUI/picks/f_tick.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
                     self.buttons[i][j].setIcon(icon1)
                     self.buttons[i][j].setEnabled(False)
-                elif (i, j) in self.flag_checker.keys() and self.field[i][j] == -1:
+                elif (i, j) in self.flag_checker_list.keys() and self.field[i][j] == -1:
                     icon1 = QIcon('GUI/picks/r_tick.png'.format(self.field[i][j]))
                     icon1.addPixmap(QPixmap('GUI/picks/r_tick.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
                     icon1.addPixmap(QPixmap('GUI/picks/r_tick.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
@@ -181,8 +206,16 @@ class Example(QWidget):
                 else:
                     self.buttons[i][j].setEnabled(False)
 
+    def win_game(self):
+        # for i in range(16):
+        # for j in range(16):
+        #     if self.field[i][j] == -1 and self.flag_checker_list[i][j] is True:
+        question = ()
+
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     ex = Example()
     ex.show()
+    ex.win_game()
     sys.exit(app.exec())
