@@ -78,6 +78,7 @@ class Example(QWidget):
         self.initUI()
         self.i = 0
         self.j = 0
+        self.flag_checker = {}
         self.mouse_btm = 1
         self.off_square = set()
 
@@ -85,8 +86,8 @@ class Example(QWidget):
         self.setGeometry(300, 300, 480, 480)
         self.setWindowTitle("Supper")
         # делаем кнопочки :3
-        arr = Sapper(16, 16, 40, 1)
-        array = arr.get_field()
+        # arr = Sapper(16, 16, 40, 1)
+        # array = arr.get_field()
         self.buttons = []
         for i in range(16):
             self.buttons.append([0] * 16)
@@ -133,10 +134,9 @@ class Example(QWidget):
             icon1 = QIcon('GUI/picks/min.png'.format(self.field[x][y]))
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
-            self.icon = QIcon('GUI/picks/min.png')
             self.buttons[x][y].setEnabled(False)
             self.buttons[x][y].setIcon(icon1)
-
+            self.game_over()
         else:
             icon1 = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
             icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -150,20 +150,36 @@ class Example(QWidget):
         if event.button() == Qt.RightButton:
             self.mouse_btm = event.button()
             icon = QIcon('GUI/picks/flag.png')
-            if self.buttons[self.i][self.j].icon:
-                print(1)
-                self.buttons[self.i][self.j].setIcon(QIcon('GUI/picks/background.png'))
+            if (self.i, self.j) in self.flag_checker.keys():
+                try:
+                    self.buttons[self.i][self.j].setIcon(QIcon())
+                    self.flag_checker.pop((self.i, self.j))
+                except Example:
+                    pass
             else:
-                print(2)
                 self.buttons[self.i][self.j].setIcon(icon)
+                self.flag_checker[(self.i, self.j)] = True
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
-    # def game_over(self):
-    #     for i in range(len(self.field)):
-    #         for j in range(len(self.field[0])):
-    #             self.buttons[i][j].setEnabled(False)
-    #             icon1 = QIcon('GUI/picks/background.png')
-    #             self.buttons[i][j].setIcon(icon1)
+    def game_over(self):
+        for i in range(len(self.field)):
+            for j in range(len(self.field[0])):
+                if (i, j) in self.flag_checker.keys() and self.field[i][j] != -1:
+                    icon1 = QIcon('GUI/picks/f_tick.png'.format(self.field[i][j]))
+                    icon1.addPixmap(QPixmap('GUI/picks/f_tick.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    icon1.addPixmap(QPixmap('GUI/picks/f_tick.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+                    self.buttons[i][j].setIcon(icon1)
+                    self.buttons[i][j].setEnabled(False)
+                elif (i, j) in self.flag_checker.keys() and self.field[i][j] == -1:
+                    icon1 = QIcon('GUI/picks/r_tick.png'.format(self.field[i][j]))
+                    icon1.addPixmap(QPixmap('GUI/picks/r_tick.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+                    icon1.addPixmap(QPixmap('GUI/picks/r_tick.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
+                    self.buttons[i][j].setIcon(icon1)
+                    self.buttons[i][j].setEnabled(False)
+                elif self.field[i][j] == -1:
+                    self.buttons[i][j].click()
+                else:
+                    self.buttons[i][j].setEnabled(False)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
