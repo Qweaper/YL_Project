@@ -111,12 +111,7 @@ class Example(QWidget):
                     self.off_square.add((i, j))
                     self.open_empty_field(i, j)
                 elif self.field[i][j] >= 1:
-                    icon1 = QIcon('GUI/Цифры/{}.jpg'.format(self.field[x][y]))
-                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Normal,
-                                    QtGui.QIcon.Off)
-                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Disabled,
-                                    QtGui.QIcon.Off)
-                    self.buttons[x][y].setIcon(icon1)
+                    self.buttons[i][j].click()
                     break
                 elif self.field[i][j] != 0:
                     break
@@ -127,7 +122,7 @@ class Example(QWidget):
         x, y = self.sender().xy
         # print(self.i, self.j)
         if self.flag:
-            self.trash = Sapper(16, 16, 40, x * 16 + y)
+            self.trash = Sapper(16, 16, 10, x * 16 + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
         if self.field[x][y] == 0:  # проверка на пустую клетку
@@ -163,6 +158,12 @@ class Example(QWidget):
                 self.buttons[self.i][self.j].setIcon(icon)
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
 
+    # def game_over(self):
+    #     for i in range(len(self.field)):
+    #         for j in range(len(self.field[0])):
+    #             self.buttons[i][j].setEnabled(False)
+    #             icon1 = QIcon('GUI/picks/background.png')
+    #             self.buttons[i][j].setIcon(icon1)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
