@@ -267,6 +267,7 @@ class PlayGround(QWidget):
         self.win = QMessageBox(self)
         self.win.show()
         self.win.setText("Вы победили!")
+        self.game_over()
 
 
 if __name__ == '__main__':
