@@ -61,8 +61,8 @@ class Ui_Menu(object):
         _translate = QtCore.QCoreApplication.translate
         Menu.setWindowTitle(_translate("Menu", "Сапёр"))
         self.name.setText(_translate("Menu", "Сапёр"))
-        self.t_high.setText(_translate("Menu", "Высота"))
-        self.t_lengh.setText(_translate("Menu", "Длинна"))
+        self.t_high.setText(_translate("Menu", "Длинна"))
+        self.t_lengh.setText(_translate("Menu", "Высота"))
         self.t_mine.setText(_translate("Menu", "Кол-во мин"))
         self.start.setText(_translate("Menu", "Start Game"))
 
