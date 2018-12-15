@@ -34,10 +34,17 @@ class MyWidget(QMainWindow, Ui_Menu):
         super().__init__()
         self.setupUi(self)
 
+        self.start.clicked.connect(self.start_game)
+        self.move(300, 300)
+        # self.windowIconChanged(QIcon('GUI/picks/min.png'))
+        self.lengh.setText('0')
+        self.mines.setText('0')
+        self.high.setText('0')
 
-    def initUI(self):
-        self.start.clicked().connect()
-
+    def start_game(self):
+        self.playground = PlayGround(int(self.high.text()), int(self.lengh.text()), int(self.mines.text()))
+        # playground = PlayGround()
+        self.playground.show()
 
 
 class Sapper(object):
@@ -83,9 +90,14 @@ class Sapper(object):
         return edited_field
 
 
-class Example(QWidget):
-    def __init__(self):
-        super().__init__()
+class PlayGround(QWidget):
+    def __init__(self, high, lenth, mines):
+        super(PlayGround, self).__init__()
+        self.lengh_param = mines
+        self.mines_param = lenth
+        self.high_param = high
+        print('lOL')
+
         self.flag = True  # Без комментариев...
         self.initUI()
         self.i = 0
@@ -100,24 +112,27 @@ class Example(QWidget):
     def initUI(self):
         self.flags = QLabel(self)
         self.flags.setText('Кол-во флагов: {}'.format(0))
-        self.flags.move(0, 480)
+        # self.flags.move(0, 480)
+        self.flags.move(0, 30 * self.high_param)
         self.flags.resize(150, 20)
-        self.setGeometry(300, 300, 480, 500)
+        # self.setGeometry(300, 300, 480, 500)
+        self.setGeometry(300, 300, 30 * self.lengh_param, 30 * self.high_param + 20)
         self.setWindowTitle("Supper")
         # делаем кнопочки :3
         # arr = Sapper(16, 16, 40, 1)
         # array = arr.get_field()
         self.buttons = []
-        for i in range(16):
-            self.buttons.append([0] * 16)
-        for i in range(16):
-            for j in range(16):
+        for i in range(self.mines_param):
+            self.buttons.append([0] * self.mines_param)
+        for i in range(self.high_param):
+            for j in range(self.mines_param):
                 self.buttons[i][j] = QPushButton(self)
                 self.buttons[i][j].resize(30, 30)
                 self.buttons[i][j].move(0 + i * 30, 0 + j * 30)
                 self.buttons[i][j].setText("")
                 self.buttons[i][j].xy = (i, j)
                 self.buttons[i][j].clicked.connect(self.sap)
+        self.show()
 
     def open_empty_field(self, i, j):
         x = i
@@ -142,7 +157,7 @@ class Example(QWidget):
         x, y = self.sender().xy
         # print(self.i, self.j)
         if self.flag:
-            self.trash = Sapper(16, 16, 10, x * 16 + y)
+            self.trash = Sapper(self.high_param, self.lengh_param, self.mines_param, x * self.high_param + y)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
         if self.field[x][y] == 0:  # проверка на пустую клетку
@@ -177,7 +192,7 @@ class Example(QWidget):
                     self.flag_checker_list.pop((self.i, self.j))
                     self.num_of_flags += 1
                     self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
-                except Example:
+                except PlayGround:
                     pass
             else:
                 self.buttons[self.i][self.j].setIcon(icon)
@@ -203,6 +218,14 @@ class Example(QWidget):
                     self.buttons[i][j].setEnabled(False)
                 elif self.field[i][j] == -1:
                     self.buttons[i][j].click()
+                elif self.field[i][j] >= 1:
+                    icon1 = QIcon('GUI/Цифры/{}.jpg'.format(self.field[i][j]))
+                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[i][j])), QtGui.QIcon.Normal,
+                                    QtGui.QIcon.Off)
+                    icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[i][j])), QtGui.QIcon.Disabled,
+                                    QtGui.QIcon.Off)
+                    self.buttons[i][j].setEnabled(False)
+                    self.buttons[i][j].setIcon(icon1)
                 else:
                     self.buttons[i][j].setEnabled(False)
 
@@ -212,10 +235,8 @@ class Example(QWidget):
         #     if self.field[i][j] == -1 and self.flag_checker_list[i][j] is True:
         question = ()
 
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = MyWidget()
     ex.show()
-    ex.win_game()
     sys.exit(app.exec())
