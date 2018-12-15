@@ -146,14 +146,15 @@ class PlayGround(QWidget):
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.buttons[x][y].setEnabled(False)
             for i, j in get_coords(x, y, len(self.field), len(self.field[0])):
-                if self.field[i][j] == 0 and (i, j) not in self.off_square:
+                if self.field[i][j] == 0 and (i, j) not in self.off_square and (
+                i, j) not in self.flag_checker_list.keys():
                     self.buttons[x][y].setEnabled(False)
                     # self.open_square.add((x, y))
                     self.off_square.add((i, j))
                     self.open_empty_field(i, j)
                 elif self.field[i][j] >= 1:
                     self.buttons[i][j].click()
-                    break
+
                 elif self.field[i][j] != 0:
                     break
         else:
@@ -166,13 +167,13 @@ class PlayGround(QWidget):
             self.trash = Sapper(self.high_param, self.lengh_param, self.mines_param)
             self.field = self.trash.edit_field(self.trash.get_field())
             self.flag = False
-        if self.field[x][y] == 0:  # проверка на пустую клетку
+        if (x, y) in self.flag_checker_list.keys():
+            pass
+        elif self.field[x][y] == 0:  # проверка на пустую клетку
             self.open_empty_field(x, y)  # надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
             # self.open_square.add((x, y))
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
-        elif (x, y) in self.flag_checker_list.keys():
-            pass
         elif self.field[x][y] == -1:
             icon1 = QIcon('GUI/picks/min.png'.format(self.field[x][y]))
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -243,7 +244,9 @@ class PlayGround(QWidget):
                 else:
                     self.buttons[i][j].setEnabled(False)
 
-    # def player_victory_check(self):
+    def player_victory_check(self):
+        pass
+
     #     self.coords_mines = self.trash.get_coords_mines()
     #     print(self.coords_mines)
     #     print(self.coords_flags)
