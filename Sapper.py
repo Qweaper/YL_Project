@@ -85,12 +85,12 @@ class Sapper(object):
                             edited_field[i1][j1] += 1
         return edited_field
 
-    def get_coords_mines(self):
-        numbers = set()
-        for number_mine in self.numbers_mine:
-            x, y = number_mine // self.weigh, number_mine % self.weigh
-            numbers.add((x, y))
-        return numbers  # озвращаем координаты мины в виде множества с кортежами
+    # def get_coords_mines(self):
+    #     numbers = set()
+    #     for number_mine in self.numbers_mine:
+    #         x, y = number_mine // self.weigh, number_mine % self.weigh
+    #         numbers.add((x, y))
+    #     return numbers  # озвращаем координаты мины в виде множества с кортежами
 
 
 class PlayGround(QWidget):
@@ -105,13 +105,13 @@ class PlayGround(QWidget):
         self.initUI()
         self.i = 0
         self.j = 0
-        self.coords_mines = set()
-        self.open_square = set()
-        self.coords_flags = set()
+        # self.coords_mines = set()
+        # self.open_square = set()
+        # self.coords_flags = set()
         self.flag_checker_list = {}
         self.mouse_btm = 1
         self.off_square = set()
-        self.num_of_flags = 0
+        self.num_of_flags = mines
         self.trash = [[]]
         self.field = [[]]  # Надо будет добавить количество мин равное количеству флагов
 
@@ -148,7 +148,7 @@ class PlayGround(QWidget):
             for i, j in get_coords(x, y, len(self.field), len(self.field[0])):
                 if self.field[i][j] == 0 and (i, j) not in self.off_square:
                     self.buttons[x][y].setEnabled(False)
-                    self.open_square.add((x, y))
+                    # self.open_square.add((x, y))
                     self.off_square.add((i, j))
                     self.open_empty_field(i, j)
                 elif self.field[i][j] >= 1:
@@ -169,7 +169,7 @@ class PlayGround(QWidget):
         if self.field[x][y] == 0:  # проверка на пустую клетку
             self.open_empty_field(x, y)  # надо сделать другой метод открытия клетки
             self.buttons[x][y].setEnabled(False)
-            self.open_square.add((x, y))
+            # self.open_square.add((x, y))
             # проверку на клетку с флагом делать не надо, так как открыть клетку с флагом нельзя
         elif (x, y) in self.flag_checker_list.keys():
             pass
@@ -178,7 +178,7 @@ class PlayGround(QWidget):
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             icon1.addPixmap(QPixmap('GUI/picks/min.png'), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
             self.buttons[x][y].setEnabled(False)
-            self.open_square.add((x, y))
+            # self.open_square.add((x, y))
             self.buttons[x][y].setIcon(icon1)
             self.game_over()
         else:
@@ -186,10 +186,10 @@ class PlayGround(QWidget):
             icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Normal, QtGui.QIcon.Off)
             icon1.addPixmap(QPixmap('GUI/Цифры/{}.jpg'.format(self.field[x][y])), QtGui.QIcon.Disabled, QtGui.QIcon.Off)
             self.buttons[x][y].setEnabled(False)
-            self.open_square.add((x, y))
+            # self.open_square.add((x, y))
             self.buttons[x][y].setIcon(icon1)
-        if self.player_victory_check():
-            self.win_game()
+        # if self.player_victory_check():
+        #     self.win_game()
 
     def mousePressEvent(self, event):
         self.i = event.x() // 30
@@ -201,18 +201,19 @@ class PlayGround(QWidget):
                 self.buttons[self.i][self.j].setIcon(QIcon())
                 self.flag_checker_list.pop((self.i, self.j))
                 self.num_of_flags += 1
-                self.coords_flags.add((self.i, self.j))
+                # self.coords_flags.add((self.i, self.j))
                 self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
-
             else:
+                if self.num_of_flags <= 0:
+                    return
                 self.buttons[self.i][self.j].setIcon(icon)
                 self.flag_checker_list[(self.i, self.j)] = True
                 self.num_of_flags -= 1
-                self.coords_flags.remove((self.i, self.j))
+                # self.coords_flags.remove((self.i, self.j))
                 self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
-        if self.player_victory_check():
-            self.win_game()
+        # if self.player_victory_check():
+        #     self.win_game()
 
     def game_over(self):
         for i in range(len(self.field)):
@@ -242,15 +243,15 @@ class PlayGround(QWidget):
                 else:
                     self.buttons[i][j].setEnabled(False)
 
-    def player_victory_check(self):
-        self.coords_mines = self.trash.get_coords_mines()
-        print(self.coords_mines)
-        print(self.coords_flags)
-        print(self.open_square)
-        if len(self.coords_mines) + len(
-                self.open_square) == self.lengh_param * self.high_param and self.coords_mines == self.coords_flags:
-            return True
-        return False
+    # def player_victory_check(self):
+    #     self.coords_mines = self.trash.get_coords_mines()
+    #     print(self.coords_mines)
+    #     print(self.coords_flags)
+    #     print(self.open_square)
+    #     if len(self.coords_mines) + len(
+    #             self.open_square) == self.lengh_param * self.high_param and self.coords_mines == self.coords_flags:
+    #         return True
+    #     return False
 
     def win_game(self):
         self.win = QMessageBox(self)
