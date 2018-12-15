@@ -147,7 +147,7 @@ class PlayGround(QWidget):
             self.buttons[x][y].setEnabled(False)
             for i, j in get_coords(x, y, len(self.field), len(self.field[0])):
                 if self.field[i][j] == 0 and (i, j) not in self.off_square and (
-                i, j) not in self.flag_checker_list.keys():
+                        i, j) not in self.flag_checker_list.keys():
                     self.buttons[x][y].setEnabled(False)
                     # self.open_square.add((x, y))
                     self.off_square.add((i, j))
@@ -212,6 +212,8 @@ class PlayGround(QWidget):
                 self.num_of_flags -= 1
                 # self.coords_flags.remove((self.i, self.j))
                 self.flags.setText('Кол-во флагов: {}'.format(self.num_of_flags))
+                if self.num_of_flags == 0:
+                    self.win_game()
             # self.buttons[self.i][self.j].clicked.connect(self.sap)
         # if self.player_victory_check():
         #     self.win_game()
@@ -245,7 +247,12 @@ class PlayGround(QWidget):
                     self.buttons[i][j].setEnabled(False)
 
     def player_victory_check(self):
-        pass
+        predicted_mines = 0
+        for i, j in self.flag_checker_list.keys():
+            if self.field[i][j] == -1:
+                predicted_mines += 1
+        if predicted_mines == self.mines_param:
+            self.win_game()
 
     #     self.coords_mines = self.trash.get_coords_mines()
     #     print(self.coords_mines)
