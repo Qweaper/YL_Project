@@ -47,6 +47,7 @@ class MyWidget(QMainWindow, Ui_Menu):
         self.playground.show()
 
 
+
 class Sapper(object):
     def __init__(self, high, weigh, mines, excpt=None):
         self.high = high
@@ -89,6 +90,9 @@ class Sapper(object):
                             edited_field[i1][j1] += 1
         return edited_field
 
+    def get_coords_mines(self):
+        return self.numbers_mine  # озвращаем координаты мины в виде множества с кортежами
+
 
 class PlayGround(QWidget):
     def __init__(self, high, lenth, mines):
@@ -102,6 +106,7 @@ class PlayGround(QWidget):
         self.initUI()
         self.i = 0
         self.j = 0
+        self.coords_flags = set()
         self.flag_checker_list = {}
         self.mouse_btm = 1
         self.off_square = set()
@@ -228,6 +233,10 @@ class PlayGround(QWidget):
                     self.buttons[i][j].setIcon(icon1)
                 else:
                     self.buttons[i][j].setEnabled(False)
+
+    def player_victory_check(self):
+        mines = self.trash.get_coords_mines()
+        flags = self.coords_flags
 
     def win_game(self):
         # for i in range(16):
