@@ -56,8 +56,10 @@ class Sapper(object):
         numbers = list(range(0, high * weigh))
 
         self.numbers_mine = set()
-        for _ in range(self.mines):
-            self.numbers_mine.add(choice(numbers))
+        for _ in range(min(self.mines, high * weigh)):
+            random_mine = choice(numbers)
+            self.numbers_mine.add(random_mine)
+            numbers.remove(random_mine)
         numbers.clear()
 
     def get_field(self):
@@ -99,7 +101,7 @@ class PlayGround(QWidget):
         self.lengh_param = lengh
         self.mines_param = mines
         self.high_param = high
-        print('lOL')
+        # print('lOL')
 
         self.flag = True  # Без комментариев...
         self.initUI()
